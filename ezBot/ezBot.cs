@@ -185,44 +185,6 @@ namespace ezBot
 
                                     await connection.SelectChampion(Enums.championToId(Program.firstChampionPick));
                                     await connection.ChampionSelectCompleted();
-                                    Tools.ConsoleMessage("Selected champion: " + Program.firstChampionPick.ToUpper());
-                                }
-                                else if (Program.firstChampionPick == "RANDOM")
-                                {
-                                    int Spell1;
-                                    int Spell2;
-                                    if (!Program.randomSpell)
-                                    {
-                                        Spell1 = Enums.spellToId(Program.spell1);
-                                        Spell2 = Enums.spellToId(Program.spell2);
-                                    }
-                                    else
-                                    {
-                                        var random = new Random();
-                                        var spellList = new List<int> { 13, 6, 7, 10, 1, 11, 21, 12, 3, 14, 2, 4 };
-
-                                        int index = random.Next(spellList.Count);
-                                        int index2 = random.Next(spellList.Count);
-
-                                        int randomSpell1 = spellList[index];
-                                        int randomSpell2 = spellList[index2];
-
-                                        if (randomSpell1 == randomSpell2)
-                                        {
-                                            int index3 = random.Next(spellList.Count);
-                                            randomSpell2 = spellList[index3];
-                                        }
-
-                                        Spell1 = Convert.ToInt32(randomSpell1);
-                                        Spell2 = Convert.ToInt32(randomSpell2);
-                                    }
-
-                                    await connection.SelectSpells(Spell1, Spell2);
-
-                                    var randAvailableChampsArray = availableChampsArray.Shuffle();
-                                    await connection.SelectChampion(randAvailableChampsArray.First(champ => champ.Owned || champ.FreeToPlay).ChampionId);
-                                    await connection.ChampionSelectCompleted();
-                                    Tools.ConsoleMessage("Selected champion: RANDOM");
                                 }
                                 else
                                 {
@@ -260,7 +222,6 @@ namespace ezBot
                                     var randAvailableChampsArray = availableChampsArray.Shuffle();
                                     await connection.SelectChampion(Enums.championToId(Program.secondChampionPick));
                                     await connection.ChampionSelectCompleted();
-                                    Tools.ConsoleMessage("Selected champion: " + Program.secondChampionPick.ToUpper());
                                 }
                             }
                             break;
@@ -334,9 +295,18 @@ namespace ezBot
                 {
                     if (message.ToString().Contains("EndOfGameStats"))
                     {
-                        EndOfGameStats eog = new EndOfGameStats();
+                        /*EndOfGameStats eog = new EndOfGameStats();
                         exeProcess.Exited -= exeProcess_Exited;
-                        exeProcess.Kill();
+                        exeProcess.Kill();*/
+                        //Process lol = Process.GetProcessById(Tools.GetLOLProcessID());
+                        foreach (Process process in Process.GetProcessesByName("League Of Legends"))
+                        {
+                            if (process.Id == Tools.GetLOLProcessID())
+                            {
+                                process.Kill();
+                            }
+                        }
+
                         loginPacket = await this.connection.GetLoginDataPacketForUser();
                         archiveSumLevel = sumLevel;
                         sumLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
