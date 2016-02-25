@@ -1,0 +1,44 @@
+                                     BBBBBBBBBBBBBBBBB                             tttt          
+                                     B::::::::::::::::B                         ttt:::t          
+                                     B::::::BBBBBB:::::B                        t:::::t          
+                                     BB:::::B     B:::::B                       t:::::t          
+    eeeeeeeeeeee    zzzzzzzzzzzzzzzzz  B::::B     B:::::B   ooooooooooo   ttttttt:::::ttttttt    
+  ee::::::::::::ee  z:::::::::::::::z  B::::B     B:::::B oo:::::::::::oo t:::::::::::::::::t    
+ e::::::eeeee:::::eez::::::::::::::z   B::::BBBBBB:::::B o:::::::::::::::ot:::::::::::::::::t    
+e::::::e     e:::::ezzzzzzzz::::::z    B:::::::::::::BB  o:::::ooooo:::::otttttt:::::::tttttt    
+e:::::::eeeee::::::e      z::::::z     B::::BBBBBB:::::B o::::o     o::::o      t:::::t          
+e:::::::::::::::::e      z::::::z      B::::B     B:::::Bo::::o     o::::o      t:::::t          
+e::::::eeeeeeeeeee      z::::::z       B::::B     B:::::Bo::::o     o::::o      t:::::t          
+e:::::::e              z::::::z        B::::B     B:::::Bo::::o     o::::o      t:::::t    tttttt
+e::::::::e            z::::::zzzzzzzzBB:::::BBBBBB::::::Bo:::::ooooo:::::o      t::::::tttt:::::t
+ e::::::::eeeeeeee   z::::::::::::::zB:::::::::::::::::B o:::::::::::::::o      tt::::::::::::::t
+  ee:::::::::::::e  z:::::::::::::::zB::::::::::::::::B   oo:::::::::::oo         tt:::::::::::tt
+    eeeeeeeeeeeeee  zzzzzzzzzzzzzzzzzBBBBBBBBBBBBBBBBB      ooooooooooo             ttttttttttt  
+                                                                                                 
+                                                                                              
+
+v1.1.2
+* Updated for 6.4.
+* Add secundary champion to pick.
+* Add support to champions Bard, Ekko, Illaoi, Jhin, Kindred and TahmKench.
+* Remove buy boost (not working properlly).
+
+v1.1.1
+* Remove launcher.
+* Fixed NA error.
+
+v1.1.0
+* Fixed champion select error.
+
+v1.0.0
+* Auto join/accept queue.
+* Wait for leave buster.
+* You can easy change lol version at config file.
+* Launcher for rename app at first time.
+* Configuration to max bot that you wnat.
+* Max level for botting configurable
+* Replace game config.
+* Auto buy boost.
+* Random spells at achampion select or not.
+* Regions are NA, EUW, EUNE, LAN, LAS, OCE, TR, BR, RU and KR
+* Queue types are INTRO_BOT, BEGGINER_BOT, MEDIUM_BOT, NORMAL_3x3, NORMAL_5x5 and ARAM
