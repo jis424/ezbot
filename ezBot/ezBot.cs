@@ -59,13 +59,14 @@ namespace ezBot
         public int threadID;
         public double sumLevel { get; set; }
         public double archiveSumLevel { get; set; }
-        public double rpBalance { get; set; }
         public QueueTypes queueType { get; set; }
         public QueueTypes actualQueueType { get; set; }
-
         public bool firstTimeInPostChampSelect = true;
-
         public string region { get; set; }
+
+        //Account Balance (IP and RP)
+        public double rpBalance { get; set; }
+        public double ipBalance { get; set; }
 
         //leave buster
         public int relogTry = 0;
@@ -310,6 +311,8 @@ namespace ezBot
                         loginPacket = await this.connection.GetLoginDataPacketForUser();
                         archiveSumLevel = sumLevel;
                         sumLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
+                        ipBalance = loginPacket.IpBalance;
+                        Tools.ConsoleMessage("Your current IP: " + ipBalance.ToString());
                         if (sumLevel != archiveSumLevel)
                         {
                             levelUp();
@@ -466,6 +469,7 @@ namespace ezBot
                 string sumName = loginPacket.AllSummonerData.Summoner.Name;
                 double sumId = loginPacket.AllSummonerData.Summoner.SumId;
                 rpBalance = loginPacket.RpBalance;
+                ipBalance = loginPacket.IpBalance;
                 if (sumLevel >= Program.maxLevel)
                 {
                     connection.Disconnect();
@@ -511,7 +515,8 @@ namespace ezBot
                     actualQueueType = QueueTypes.NORMAL_3x3;
                 }
 
-                Tools.ConsoleMessage("Welcome to the League " + loginPacket.AllSummonerData.Summoner.Name);
+                Tools.ConsoleMessage("Welcome to the League " + loginPacket.AllSummonerData.Summoner.Name + " - lvl ("+loginPacket.AllSummonerData.SummonerLevel.Level+")");
+                Tools.ConsoleMessage("Your current IP: " + ipBalance.ToString());
                 availableChampsArray = await connection.GetAvailableChampions();
                 PlayerDTO player = await connection.CreatePlayer();
                 if (this.loginPacket.ReconnectInfo != null && this.loginPacket.ReconnectInfo.Game != null)
@@ -867,6 +872,7 @@ namespace ezBot
         {
             Tools.ConsoleMessage("Level Up: " + sumLevel);
             rpBalance = loginPacket.RpBalance;
+            ipBalance = loginPacket.IpBalance;
             if (sumLevel >= Program.maxLevel)
             {
                 connection.Disconnect();

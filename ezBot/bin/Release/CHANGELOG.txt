@@ -19,6 +19,7 @@ e::::::::e            z::::::zzzzzzzzBB:::::BBBBBB::::::Bo:::::ooooo:::::o      
 v1.2.0
 * Remove random pick, now it try first pick if can't pick... go second.
 * Add buy experience boost again.
+* Add current IP information.
 
 v1.1.2
 * Updated for 6.4.
