@@ -27,6 +27,7 @@ namespace ezBot
         public static string spell1 = "flash";
         public static string spell2 = "ignite";
         public static string LoLVersion = "";// = "6.3.16_02_05_12_04";
+        public static bool buyExpBoost = false;
 
         private static void Main(string[] args)
         {
@@ -128,6 +129,7 @@ namespace ezBot
 
                 //Account
                 Region = iniFile.IniReadValue("Account", "Region").ToUpper();
+                buyExpBoost = Convert.ToBoolean(iniFile.IniReadValue("Account", "BuyExpBoost"));
 
                 //LOL
                 firstChampionPick = iniFile.IniReadValue("LOL", "ChampionPick").ToUpper();

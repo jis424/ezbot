@@ -16,6 +16,9 @@ e::::::::e            z::::::zzzzzzzzBB:::::BBBBBB::::::Bo:::::ooooo:::::o      
     eeeeeeeeeeeeee  zzzzzzzzzzzzzzzzzBBBBBBBBBBBBBBBBB      ooooooooooo             ttttttttttt  
                                                                                                  
                                                                                               
+v1.2.0
+* Remove random pick, now it try first pick if can't pick... go second.
+* Add buy experience boost again.
 
 v1.1.2
 * Updated for 6.4.
