@@ -1,0 +1,2 @@
+* Adicionar quantidade de ip que a conta possui.
+* Adicionar level dos player no console novamente.

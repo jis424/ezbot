@@ -341,6 +341,11 @@ namespace ezBot
             {
                 matchParams.BotDifficulty = "MEDIUM";
             }
+            else if (queueType == QueueTypes.BOT_3x3) //3x3 TT
+            {
+                matchParams.BotDifficulty = "MEDIUM";
+            }
+
             //Check if is available to join queue.
             if (sumLevel == 3 && actualQueueType == QueueTypes.NORMAL_5x5)
             {
