@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
@@ -49,6 +50,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="donate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="donate.Designer.cs">
+      <DependentUpon>donate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Enums.cs" />
     <Compile Include="Utils\IniFile.cs" />
     <Compile Include="LOL\RiotObjects\Platform\Messaging\SimpleDialogMessageResponse.cs" />
@@ -180,6 +187,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="donate.resx">
+      <DependentUpon>donate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

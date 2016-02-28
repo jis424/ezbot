@@ -31,6 +31,10 @@ namespace ezBot
 
         private static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            donate dn = new donate();
+            dn.ShowDialog();
+
             Console.Title = "ezBot";
             Console.SetWindowSize(Console.WindowWidth + 5, Console.WindowHeight);
 
@@ -126,6 +130,7 @@ namespace ezBot
                 maxBots = Convert.ToInt32(iniFile.IniReadValue("General", "MaxBots"));
                 maxLevel = Convert.ToInt32(iniFile.IniReadValue("General", "MaxLevel"));
                 replaceConfig = Convert.ToBoolean(iniFile.IniReadValue("General", "ReplaceLoLConfig"));
+                LoLVersion = iniFile.IniReadValue("General", "LoLVersion");
 
                 //Account
                 Region = iniFile.IniReadValue("Account", "Region").ToUpper();
@@ -137,7 +142,6 @@ namespace ezBot
                 randomSpell = Convert.ToBoolean(iniFile.IniReadValue("LOL", "RndSpell"));
                 spell1 = iniFile.IniReadValue("LOL", "Spell1").ToUpper();
                 spell2 = iniFile.IniReadValue("LOL", "Spell2").ToUpper();
-                LoLVersion = iniFile.IniReadValue("LOL", "LoLVersion");
             }
             catch (Exception e)
             {
