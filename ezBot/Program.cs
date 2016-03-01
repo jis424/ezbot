@@ -27,7 +27,7 @@ namespace ezBot
         public static bool randomSpell = false;
         public static string spell1 = "flash";
         public static string spell2 = "ignite";
-        public static string LoLVersion = "";// = "6.3.16_02_05_12_04";
+        public static string LoLVersion = "";// = "6.4.16_02_22_17_11";
         public static bool buyExpBoost = false;
         public static bool checkUpdates = true;
 
