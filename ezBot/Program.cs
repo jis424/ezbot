@@ -9,6 +9,7 @@ using System.Net;
 using System.Management;
 using LoLLauncher;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ezBot
 {
@@ -28,6 +29,9 @@ namespace ezBot
         public static string spell2 = "ignite";
         public static string LoLVersion = "";// = "6.3.16_02_05_12_04";
         public static bool buyExpBoost = false;
+        public static bool checkUpdates = true;
+
+        private static WebClient client = null;
 
         private static void Main(string[] args)
         {
@@ -35,6 +39,7 @@ namespace ezBot
             donate wwForm = new donate();
             wwForm.ShowDialog();
             */
+
             Console.Title = "ezBot";
             Console.SetWindowSize(Console.WindowWidth + 5, Console.WindowHeight);
 
@@ -45,6 +50,37 @@ namespace ezBot
 
             Tools.ConsoleMessage("Loading config.");
             loadConfiguration();
+
+            client = new WebClient();
+            if (checkUpdates)
+            {
+                try
+                {
+                    int num = int.Parse(Tools.ezVersion.ToString().Replace(".", ""));
+                    int num2 = 0;
+                    try
+                    {
+                        Stream stream = client.OpenRead(Tools.versionURL);
+                        num2 = int.Parse(new StreamReader(stream).ReadLine());
+                        stream.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Tools.ConsoleMessage(ex.Message.ToString());
+                    }
+
+                    if (num < num2)
+                    {
+                        MessageBox.Show("A new version of ezBot was released.\nPlease goto EloBuddy forums and download latest version.", "ezBot", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Environment.Exit(0);
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("Could not check the update.", "ezBot", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Environment.Exit(0);
+                }
+            }
 
             if (replaceConfig)
             {
@@ -127,6 +163,7 @@ namespace ezBot
                 IniFile iniFile = new IniFile(AppDomain.CurrentDomain.BaseDirectory + "\\configs\\settings.ini");
 
                 //General
+                checkUpdates = Convert.ToBoolean(iniFile.IniReadValue("General", "CheckUpdates"));
                 lolPath = iniFile.IniReadValue("General", "LauncherPath");
                 maxBots = Convert.ToInt32(iniFile.IniReadValue("General", "MaxBots"));
                 maxLevel = Convert.ToInt32(iniFile.IniReadValue("General", "MaxLevel"));

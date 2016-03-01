@@ -329,6 +329,7 @@ namespace ezBot
                 }
                 else if (message.ToString().Contains("EndOfGameStats"))
                 {
+/*
                     EndOfGameStats eog = new EndOfGameStats();
                     connection_OnMessageReceived(sender, (object)eog);
                     exeProcess.Exited -= new EventHandler(this.exeProcess_Exited);
@@ -338,7 +339,20 @@ namespace ezBot
                     {
                         exeProcess.CloseMainWindow();
                     }
+*/
 
+                    Process[] todosProcesso = Process.GetProcesses();
+                    foreach (Process proc in todosProcesso)
+                    {
+                        if (proc.Id == Tools.GetLOLProcessID())
+                        {
+                            proc.Kill();
+                        }
+                    }
+
+                    Thread.Sleep(1500);
+                    Environment.Exit(0);
+                    /*
                     loginPacket = await this.connection.GetLoginDataPacketForUser();
                     archiveSumLevel = sumLevel;
                     sumLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
@@ -349,7 +363,7 @@ namespace ezBot
                         levelUp();
                     }
 
-                    AttachToQueue();
+                    AttachToQueue();*/
                 }
             }
         }
