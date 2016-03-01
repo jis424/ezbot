@@ -8,6 +8,12 @@ namespace LoLLauncher
 {
     public enum Region
     {
+        [ServerValue("prod.jp1.lol.riotgames.com")]
+        [LoginQueueValue("https://lq.jp1.lol.riotgames.jp/")]
+        [LocaleValue("jp_JP")]
+        [UseGarenaValue(false)]
+        JP,
+
         [ServerValue("prod.na2.lol.riotgames.com")]
         [LoginQueueValue("https://lq.na2.lol.riotgames.com/")]
         [LocaleValue("en_US")]

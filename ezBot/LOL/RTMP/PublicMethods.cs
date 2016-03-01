@@ -1147,6 +1147,15 @@ namespace LoLLauncher
             return result;
         }
 
+        public async Task<object> AcceptTrade(string SummonerInternalName, int ChampionId)
+        {
+            int Id = Invoke("lcdsChampionTradeService", "attemptTrade", new object[] { SummonerInternalName, ChampionId, true });
+            while (!results.ContainsKey(Id))
+                await Task.Delay(10);
+            results.Remove(Id);
+            return null;
+        }
+
         public async Task<object> ackLeaverBusterWarning()
         {
             int Id = Invoke("clientFacadeService", "ackLeaverBusterWarning", new object[0]);

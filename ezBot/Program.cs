@@ -31,27 +31,28 @@ namespace ezBot
 
         private static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            donate dn = new donate();
-            dn.ShowDialog();
-
+          /*  Application.EnableVisualStyles();
+            donate wwForm = new donate();
+            wwForm.ShowDialog();
+            */
             Console.Title = "ezBot";
             Console.SetWindowSize(Console.WindowWidth + 5, Console.WindowHeight);
 
             Tools.TitleMessage("ezBot - Auto Queue.");
             Tools.TitleMessage("Version: " + Application.ProductVersion);
-            Tools.TitleMessage("Made by Tryller");
+            Tools.TitleMessage("Made by Tryller.");
+            Tools.TitleMessage("Based on VoliBot.");
 
-            Tools.ConsoleMessage("Loading config");
+            Tools.ConsoleMessage("Loading config.");
             loadConfiguration();
 
             if (replaceConfig)
             {
-                Tools.ConsoleMessage("Replacing config");
+                Tools.ConsoleMessage("Replacing config.");
                 Tools.ReplaceGameConfig(lolPath);
             }
 
-            Tools.ConsoleMessage("Loading accounts");
+            Tools.ConsoleMessage("Loading accounts.");
             loadAccounts();
             int curRunning = 0;
             foreach (string acc in accounts)
@@ -65,16 +66,16 @@ namespace ezBot
                     curRunning += 1;
 
                     QueueTypes queuetype;
-                    ezBot ritoBot;
+                    ezBot ezBot;
                     if (result[2] != null)
                     {
                         queuetype = (QueueTypes)System.Enum.Parse(typeof(QueueTypes), result[2]);
-                        ritoBot = new ezBot(result[0], result[1], Region, lolPath, curRunning, queuetype, LoLVersion);
+                        ezBot = new ezBot(result[0], result[1], Region, lolPath, queuetype, LoLVersion);
                     }
                     else
                     {
                         queuetype = QueueTypes.ARAM;
-                        ritoBot = new ezBot(result[0], result[1], Region, lolPath, curRunning, queuetype, LoLVersion);
+                        ezBot = new ezBot(result[0], result[1], Region, lolPath, queuetype, LoLVersion);
                     }
 
                     if (curRunning == maxBots)
@@ -106,12 +107,12 @@ namespace ezBot
                 if (result[2] != null)
                 {
                     QueueTypes queuetype = (QueueTypes)System.Enum.Parse(typeof(QueueTypes), result[2]);
-                    ezBot ritoBot = new ezBot(result[0], result[1], Region, lolPath, curRunning, queuetype, LoLVersion);
+                    ezBot ritoBot = new ezBot(result[0], result[1], Region, lolPath, queuetype, LoLVersion);
                 }
                 else
                 {
                     QueueTypes queuetype = QueueTypes.ARAM;
-                    ezBot ritoBot = new ezBot(result[0], result[1], Region, lolPath, curRunning, queuetype, LoLVersion);
+                    ezBot ritoBot = new ezBot(result[0], result[1], Region, lolPath, queuetype, LoLVersion);
                 }
 
                 if (curRunning == maxBots)
@@ -139,7 +140,7 @@ namespace ezBot
                 //LOL
                 firstChampionPick = iniFile.IniReadValue("LOL", "ChampionPick").ToUpper();
                 secondChampionPick = iniFile.IniReadValue("LOL", "SecondChampionPick").ToUpper();
-                randomSpell = Convert.ToBoolean(iniFile.IniReadValue("LOL", "RndSpell"));
+                randomSpell = Convert.ToBoolean(iniFile.IniReadValue("LOL", "RandomSpell"));
                 spell1 = iniFile.IniReadValue("LOL", "Spell1").ToUpper();
                 spell2 = iniFile.IniReadValue("LOL", "Spell2").ToUpper();
             }

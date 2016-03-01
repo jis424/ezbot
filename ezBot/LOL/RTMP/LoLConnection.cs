@@ -111,6 +111,7 @@ namespace LoLLauncher
                     catch
                     {
                         Error("Riots servers are currently unavailable.", ErrorType.AuthKey);
+                        ezBot.Tools.LogErrors("Riots servers are currently unavailable.");
                         Disconnect();
                         return;
                     }
@@ -247,6 +248,7 @@ namespace LoLLauncher
              */
 
             Error("Garena Servers are not yet supported", ErrorType.Login);
+            ezBot.Tools.LogErrors("Garena servers are not yet supported.");
             Disconnect();
             return false;
         }
@@ -379,16 +381,19 @@ namespace LoLLauncher
                 if (e.Message == "The remote name could not be resolved: '" + loginQueue + "'")
                 {
                     Error("Please make sure you are connected the internet!", ErrorType.AuthKey);
+                    ezBot.Tools.LogErrors("Please make sure you are connected the internet.");
                     Disconnect();
                 }
                 else if (e.Message == "The remote server returned an error: (403) Forbidden.")
                 {
                     Error("Your username or password is incorrect!", ErrorType.Password);
+                    ezBot.Tools.LogErrors("You username os password is not corret.");
                     Disconnect();
                 }
                 else
                 {
                     Error("Unable to get Auth Key \n" + e, ErrorType.AuthKey);
+                    ezBot.Tools.LogErrors("Unable to get Auth Key " + e);
                     Disconnect();
                 }
 
@@ -435,6 +440,7 @@ namespace LoLLauncher
             catch (Exception e)
             {
                 Error("Unable to connect to Riot Games web server \n" + e.Message, ErrorType.General);
+                ezBot.Tools.LogErrors("Unable to connect to Riot Games web server " + e.Message);
                 Disconnect();
                 return false;
             }
@@ -451,6 +457,7 @@ namespace LoLLauncher
             if (S0 != 0x03)
             {
                 Error("Server returned incorrect version in handshake: " + S0, ErrorType.Handshake);
+                ezBot.Tools.LogErrors("Server returned incorrect version in handshake: " + S0);
                 Disconnect();
                 return false;
             }
@@ -478,6 +485,7 @@ namespace LoLLauncher
             if (!valid)
             {
                 Error("Server returned invalid handshake", ErrorType.Handshake);
+                ezBot.Tools.LogErrors("Server returned invalid handshake");
                 Disconnect();
                 return false;
             }
@@ -1142,13 +1150,6 @@ namespace LoLLauncher
 
         #endregion
 
-
-
-        #region Public Client Methods
-
-
-
-        #endregion
 
         #region General Returns
         public bool IsConnected()

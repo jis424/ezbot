@@ -56,6 +56,8 @@
     <Compile Include="donate.Designer.cs">
       <DependentUpon>donate.cs</DependentUpon>
     </Compile>
+    <Compile Include="LOL\RiotObjects\Trade\TradeContractDTO.cs" />
+    <Compile Include="LOL\RTMP\Error.cs" />
     <Compile Include="Utils\Enums.cs" />
     <Compile Include="Utils\IniFile.cs" />
     <Compile Include="LOL\RiotObjects\Platform\Messaging\SimpleDialogMessageResponse.cs" />
@@ -171,7 +173,6 @@
     <Compile Include="LOL\RiotObjects\Team\TeamInfo.cs" />
     <Compile Include="LOL\RiotObjects\UnclassedObject.cs" />
     <Compile Include="LOL\RTMP\ClassDefinition.cs" />
-    <Compile Include="LOL\RTMP\Error.cs" />
     <Compile Include="LOL\RTMP\LoLConnection.cs" />
     <Compile Include="LOL\RTMP\Packet.cs" />
     <Compile Include="LOL\RTMP\PublicMethods.cs" />

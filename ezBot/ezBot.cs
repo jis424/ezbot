@@ -39,39 +39,44 @@ using LoLLauncher.RiotObjects.Platform.Game.Map;
 using LoLLauncher.RiotObjects.Platform.Summoner.Icon;
 using LoLLauncher.RiotObjects.Platform.Catalog.Icon;
 using LoLLauncher.RiotObjects.Platform.Messaging;
+using LoLLauncher.RiotObjects.Platform.Trade;
 
 namespace ezBot
 {
     internal class ezBot
     {
-        public LoginDataPacket loginPacket = new LoginDataPacket();
+        public Process exeProcess;
         public GameDTO currentGame = new GameDTO();
+        public ChampionDTO[] availableChampsArray;
+        public LoginDataPacket loginPacket = new LoginDataPacket();
         public LoLConnection connection = new LoLConnection();
         public List<ChampionDTO> availableChamps = new List<ChampionDTO>();
-        public ChampionDTO[] availableChampsArray;
+
         public bool firstTimeInLobby = true;
         public bool firstTimeInQueuePop = true;
         public bool firstTimeInCustom = true;
-        public Process exeProcess;
-        public string ipath;
+        public bool firstTimeInPostChampSelect = true;
+        public bool reAttempt = false;
+
         public string Accountname;
         public string Password;
-        public int threadID;
-        public double sumLevel { get; set; }
-        public double archiveSumLevel { get; set; }
-        public QueueTypes queueType { get; set; }
-        public QueueTypes actualQueueType { get; set; }
-        public bool firstTimeInPostChampSelect = true;
+        public string ipath;
+
         public string region { get; set; }
 
-        //Account Balance (IP and RP)
+        public string sumName { get; set; }
+        public double sumId { get; set; }
+        public double sumLevel { get; set; }
+        public double archiveSumLevel { get; set; }
         public double rpBalance { get; set; }
         public double ipBalance { get; set; }
 
-        //leave buster
         public int relogTry = 0;
         public int m_leaverBustedPenalty { get; set; }
         public string m_accessToken { get; set; }
+
+        public QueueTypes queueType { get; set; }
+        public QueueTypes actualQueueType { get; set; }
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -79,12 +84,11 @@ namespace ezBot
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-        public ezBot(string username, string password, string reg, string path, int threadid, QueueTypes QueueType, string LoLVersion)
+        public ezBot(string username, string password, string reg, string path, QueueTypes QueueType, string LoLVersion)
         {
             ipath = path;
             Accountname = username;
             Password = password;
-            threadID = threadid;
             queueType = QueueType;
             region = reg;
             connection.OnConnect += new LoLConnection.OnConnectHandler(this.connection_OnConnect);
@@ -124,6 +128,9 @@ namespace ezBot
                     break;
                 case "LAN":
                     connection.Connect(username, password, Region.LAN, LoLVersion);
+                    break;
+                case "JP":
+                    connection.Connect(username, password, Region.JP, LoLVersion);
                     break;
             }
         }
@@ -186,6 +193,7 @@ namespace ezBot
 
                                     await connection.SelectChampion(Enums.championToId(Program.firstChampionPick));
                                     await connection.ChampionSelectCompleted();
+                                    Tools.ConsoleMessage("Selected champion: " + Program.firstChampionPick.ToUpper());
                                 }
                                 else
                                 {
@@ -220,9 +228,9 @@ namespace ezBot
 
                                     await connection.SelectSpells(Spell1, Spell2);
 
-                                    var randAvailableChampsArray = availableChampsArray.Shuffle();
                                     await connection.SelectChampion(Enums.championToId(Program.secondChampionPick));
                                     await connection.ChampionSelectCompleted();
+                                    Tools.ConsoleMessage("Selected champion: " + Program.secondChampionPick.ToUpper());
                                 }
                             }
                             break;
@@ -264,6 +272,33 @@ namespace ezBot
                         break;
                 }
             }
+            else if (message.GetType() == typeof(TradeContractDTO))
+            {
+                var tradeDto = message as TradeContractDTO;
+                if (tradeDto == null)
+                    return;
+                switch (tradeDto.State)
+                {
+                    case "PENDING":
+                        {
+                            if (tradeDto != null)
+                            {
+                                if (tradeDto.RequesterChampionId == (int)Enums.championToId(Program.firstChampionPick))
+                                {
+                                    await connection.AcceptTrade(tradeDto.RequesterInternalSummonerName, (int)tradeDto.RequesterChampionId);
+                                    Tools.ConsoleMessage("Accpted trade to champion: " + Program.firstChampionPick.ToUpper());
+                                }
+                                else if (tradeDto.RequesterChampionId == (int)Enums.championToId(Program.secondChampionPick))
+                                {
+                                    await connection.AcceptTrade(tradeDto.RequesterInternalSummonerName, (int)tradeDto.RequesterChampionId);
+                                    Tools.ConsoleMessage("Accpted trade to champion: " + Program.secondChampionPick.ToUpper());
+                                }
+                            }
+                        }
+                        break;
+                }
+                return;
+            }
             else if (message is PlayerCredentialsDto)
             {
                 firstTimeInPostChampSelect = true;
@@ -292,41 +327,35 @@ namespace ezBot
                 {
                     AttachToQueue();
                 }
-                else
+                else if (message.ToString().Contains("EndOfGameStats"))
                 {
-                    if (message.ToString().Contains("EndOfGameStats"))
+                    EndOfGameStats eog = new EndOfGameStats();
+                    connection_OnMessageReceived(sender, (object)eog);
+                    exeProcess.Exited -= new EventHandler(this.exeProcess_Exited);
+                    exeProcess.CloseMainWindow();
+                    Thread.Sleep(1000);
+                    if (this.exeProcess.Responding)
                     {
-                        /*EndOfGameStats eog = new EndOfGameStats();
-                        exeProcess.Exited -= exeProcess_Exited;
-                        exeProcess.Kill();*/
-                        //Process lol = Process.GetProcessById(Tools.GetLOLProcessID());
-                        foreach (Process process in Process.GetProcessesByName("League Of Legends"))
-                        {
-                            if (process.Id == Tools.GetLOLProcessID())
-                            {
-                                process.Kill();
-                            }
-                        }
-
-                        loginPacket = await this.connection.GetLoginDataPacketForUser();
-                        archiveSumLevel = sumLevel;
-                        sumLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
-                        ipBalance = loginPacket.IpBalance;
-                        Tools.ConsoleMessage("Your current IP: " + ipBalance.ToString());
-                        if (sumLevel != archiveSumLevel)
-                        {
-                            levelUp();
-                        }
-
-                        AttachToQueue();
+                        exeProcess.CloseMainWindow();
                     }
+
+                    loginPacket = await this.connection.GetLoginDataPacketForUser();
+                    archiveSumLevel = sumLevel;
+                    sumLevel = loginPacket.AllSummonerData.SummonerLevel.Level;
+                    ipBalance = loginPacket.IpBalance;
+                    Tools.ConsoleMessage("Your current IP: " + ipBalance.ToString());
+                    if (sumLevel != archiveSumLevel)
+                    {
+                        levelUp();
+                    }
+
+                    AttachToQueue();
                 }
             }
         }
 
         private async void AttachToQueue()
         {
-
             MatchMakerParams matchParams = new MatchMakerParams();
             //Set BotParams
             if (queueType == QueueTypes.INTRO_BOT)
@@ -494,7 +523,7 @@ namespace ezBot
                     }
                     catch (Exception exception)
                     {
-                        Tools.ConsoleMessage("Couldn't buy RP Boost.\n");
+                        Tools.ConsoleMessage("Couldn't buy RP Boost.\n" +exception.Message.ToString());
                     }
                 }
 
@@ -535,6 +564,51 @@ namespace ezBot
 
         private void connection_OnError(object sender, LoLLauncher.Error error)
         {
+            /*
+            if (error.Type == ErrorType.AuthKey || error.Type == ErrorType.General)
+            {
+                if (reAttempt)
+                {
+                    return;
+                }
+                Tools.ConsoleMessage("Unable to connect. Try one reconnect.");
+                reAttempt = true;
+                switch (region)
+                {
+                    case "EUW":
+                        connection.Connect(Accountname, Password, Region.EUW, Program.LoLVersion);
+                        break;
+                    case "EUNE":
+                        connection.Connect(Accountname, Password, Region.EUN, Program.LoLVersion);
+                        break;
+                    case "NA":
+                        connection.Connect(Accountname, Password, Region.NA, Program.LoLVersion);
+                        break;
+                    case "KR":
+                        connection.Connect(Accountname, Password, Region.KR, Program.LoLVersion);
+                        break;
+                    case "BR":
+                        connection.Connect(Accountname, Password, Region.BR, Program.LoLVersion);
+                        break;
+                    case "OCE":
+                        connection.Connect(Accountname, Password, Region.OCE, Program.LoLVersion);
+                        break;
+                    case "RU":
+                        connection.Connect(Accountname, Password, Region.RU, Program.LoLVersion);
+                        break;
+                    case "TR":
+                        connection.Connect(Accountname, Password, Region.TR, Program.LoLVersion);
+                        break;
+                    case "LAS":
+                        connection.Connect(Accountname, Password, Region.LAS, Program.LoLVersion);
+                        break;
+                    case "LAN":
+                        connection.Connect(Accountname, Password, Region.LAN, Program.LoLVersion);
+                        break;
+                }
+                return;
+            }*/
+
             if (error.Message.Contains("is not owned by summoner"))
             {
                 return;
@@ -839,6 +913,32 @@ namespace ezBot
                     Tools.ConsoleMessage("Bought 'XP Boost: 3 Days'!");
                     httpClient.Dispose();
                 }
+                else if (region == "LAN")
+                {
+                    string url = await connection.GetStoreUrl();
+                    HttpClient httpClient = new HttpClient();
+                    Console.WriteLine(url);
+                    await httpClient.GetStringAsync(url);
+
+                    string storeURL = "https://store.jp1.lol.riotgames.com/store/tabs/view/boosts/1";
+                    await httpClient.GetStringAsync(storeURL);
+
+                    string purchaseURL = "https://store.jp1.lol.riotgames.com/store/purchase/item";
+
+                    List<KeyValuePair<string, string>> storeItemList = new List<KeyValuePair<string, string>>();
+                    storeItemList.Add(new KeyValuePair<string, string>("item_id", "boosts_2"));
+                    storeItemList.Add(new KeyValuePair<string, string>("currency_type", "rp"));
+                    storeItemList.Add(new KeyValuePair<string, string>("quantity", "1"));
+                    storeItemList.Add(new KeyValuePair<string, string>("rp", "260"));
+                    storeItemList.Add(new KeyValuePair<string, string>("ip", "null"));
+                    storeItemList.Add(new KeyValuePair<string, string>("duration_type", "PURCHASED"));
+                    storeItemList.Add(new KeyValuePair<string, string>("duration", "3"));
+                    HttpContent httpContent = new FormUrlEncodedContent(storeItemList);
+                    await httpClient.PostAsync(purchaseURL, httpContent);
+
+                    Tools.ConsoleMessage("Bought 'XP Boost: 3 Days'!");
+                    httpClient.Dispose();
+                }
                 else
                 {
                     //if all servers.... return to NA
@@ -881,11 +981,13 @@ namespace ezBot
             if (sumLevel >= Program.maxLevel)
             {
                 connection.Disconnect();
+                Tools.ConsoleMessage("Your character reached the max level: " + Program.maxLevel);
+                return;
                 //bool connectStatus = await connection.IsConnected();
-                if (!connection.IsConnected())
+                /*if (!connection.IsConnected())
                 {
                     Program.lognNewAccount();
-                }
+                }*/
             }
 
             if (rpBalance == 400.0 && Program.buyExpBoost)
