@@ -99,8 +99,8 @@ namespace ezBot
             connection.OnMessageReceived += new LoLConnection.OnMessageReceivedHandler(this.connection_OnMessageReceived);
             switch (region)
             {
-                case "EUW":
-                    connection.Connect(username, password, Region.EUW, LoLVersion);
+                case "JP":
+                    connection.Connect(username, password, Region.JP, LoLVersion);
                     break;
                 case "EUNE":
                     connection.Connect(username, password, Region.EUN, LoLVersion);
@@ -589,8 +589,8 @@ namespace ezBot
                 reAttempt = true;
                 switch (region)
                 {
-                    case "EUW":
-                        connection.Connect(Accountname, Password, Region.EUW, Program.LoLVersion);
+                    case "JP":
+                        connection.Connect(Accountname, Password, Region.JP, Program.LoLVersion);
                         break;
                     case "EUNE":
                         connection.Connect(Accountname, Password, Region.EUN, Program.LoLVersion);
@@ -667,17 +667,17 @@ namespace ezBot
         {
             try
             {
-                if (region == "EUW")
+                if (region == "JP")
                 {
                     string url = await connection.GetStoreUrl();
                     HttpClient httpClient = new HttpClient();
                     Console.WriteLine(url);
                     await httpClient.GetStringAsync(url);
 
-                    string storeURL = "https://store.euw1.lol.riotgames.com/store/tabs/view/boosts/1";
+                    string storeURL = "https://store.JP1.lol.riotgames.com/store/tabs/view/boosts/1";
                     await httpClient.GetStringAsync(storeURL);
 
-                    string purchaseURL = "https://store.euw1.lol.riotgames.com/store/purchase/item";
+                    string purchaseURL = "https://store.JP1.lol.riotgames.com/store/purchase/item";
 
                     List<KeyValuePair<string, string>> storeItemList = new List<KeyValuePair<string, string>>();
                     storeItemList.Add(new KeyValuePair<string, string>("item_id", "boosts_2"));
